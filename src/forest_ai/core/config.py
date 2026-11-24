@@ -7,7 +7,7 @@ class Settings(BaseSettings):
     app_name: str = "Forest AI"
     environment: str = "development"
     database_url: str = "postgresql+psycopg://forest:forest@localhost:5432/forest_ai"
-    secrey_key: str = ""
+    secret_key: str = ""
     access_token_expire_minutes: int = 30
     ollama_base_url: str = "http://localhost:11434"
     ollama_model: str = "llama3.2"
