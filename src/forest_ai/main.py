@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 
-from forest_ai.routers import auth, entries, moods, insights
+from forest_ai.routers import auth, entries, moods, insights, reflections
 
 app = FastAPI(
     title="Forest AI",
@@ -11,6 +11,7 @@ app.include_router(auth.router)
 app.include_router(entries.router)
 app.include_router(moods.router)
 app.include_router(insights.router)
+app.include_router(reflections.router)
 
 @app.get("/health", tags=["system"])
 def health() -> dict[str, str]:
