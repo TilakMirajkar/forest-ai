@@ -7,6 +7,7 @@ from forest_ai.deps import get_current_user
 from forest_ai.models.entry import Entry
 from forest_ai.models.user import User
 from forest_ai.schemas.entry import EntryCreate, EntryOut, EntryUpdate
+from forest_ai.services.embeddings import try_embed
 
 router = APIRouter(prefix="/entries", tags=["entries"])
 
@@ -29,6 +30,7 @@ def create_entry(
     user: User = Depends(get_current_user),
 ):
     entry = Entry(user_id=user.id, **payload.model_dump())
+    entry.embedding = try_embed(payload.content)
     db.add(entry)
     db.commit()
     db.refresh(entry)
@@ -72,6 +74,10 @@ def update_entry(
     # exclude_unset: only change fields the client actually sent
     for field, value in payload.model_dump(exclude_unset=True).items():
         setattr(entry, field, value)
+
+    if payload.content is not None:
+        entry.embedding = try_embed(payload.content)
+    
     db.commit()
     db.refresh(entry)
     return entry

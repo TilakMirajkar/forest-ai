@@ -36,3 +36,20 @@ def generate_reflection(context: str) -> str:
     if not text:
         raise AIServiceError("Local model returned an empty response")
     return text
+
+def embed_text(text: str) -> list[float]:
+    settings = get_settings()
+    try:
+        response = httpx2.post(
+            f"{settings.ollama_base_url}/api/embed",
+            json={"model": settings.embedding_model, "input": text},
+            timeout=60.0,
+        )
+        response.raise_for_status()
+    except httpx2.HTTPError as exc:
+        raise AIServiceError("Embedding model is unavailable") from exc
+
+    embeddings = response.json().get("embeddings", [])
+    if not embeddings:
+        raise AIServiceError("Embedding model returned no vector")
+    return embeddings[0]

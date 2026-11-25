@@ -3,6 +3,7 @@ from datetime import datetime
 
 from sqlalchemy import ForeignKey, Integer, Text, func
 from sqlalchemy.orm import Mapped, mapped_column
+from pgvector.sqlalchemy import Vector
 
 from forest_ai.db.base import Base
 
@@ -16,6 +17,7 @@ class Entry(Base):
     )
     content: Mapped[str] = mapped_column(Text)
     mood: Mapped[int | None] = mapped_column(Integer, nullable=True)
+    embedding: Mapped[list[float] | None] = mapped_column(Vector(768), nullable=True)
     created_at: Mapped[datetime] = mapped_column(server_default=func.now())
     updated_at: Mapped[datetime] = mapped_column(
         server_default=func.now(), onupdate=func.now()
